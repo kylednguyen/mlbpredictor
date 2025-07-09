@@ -23,9 +23,9 @@ const CustomTooltip = ({ active, payload, label, selectedStat }) => {
   if (active && payload && payload.length) {
     const stat = payload[0].payload;
     return (
-      <div className="p-3 bg-gray-900 border border-green-500 rounded shadow-md text-white text-sm">
-        <div className="font-semibold text-green-300">{label} vs {stat.Opponent}</div>
-        <div className="mt-1 font-semibold text-green-400">{statLabelMap[selectedStat] || selectedStat}: {stat[selectedStat]}</div>
+      <div className="p-3 bg-gray-900 border border-red-500 rounded shadow-md text-white text-sm">
+        <div className="font-semibold text-red-300">{label} vs {stat.Opponent}</div>
+        <div className="mt-1 font-semibold text-red-400">{statLabelMap[selectedStat] || selectedStat}: {stat[selectedStat]}</div>
       </div>
     );
   }
@@ -118,7 +118,7 @@ const renderProfileStatsRow = () => {
   const hasStats = stats && typeof stats === 'object' && Object.keys(stats).length > 0;
   return (
     <div className="flex flex-col sm:flex-row gap-7 mb-4 max-w-5xl mx-auto items-center">
-      <div className="flex-shrink-0 w-40 h-40 sm:w-60 sm:h-60 rounded-3xl overflow-hidden border-4 border-green-400 bg-gray-800 shadow-2xl">
+      <div className="flex-shrink-0 w-40 h-40 sm:w-60 sm:h-60 rounded-3xl overflow-hidden border-4 border-red-400 bg-gray-800 shadow-2xl">
         <img
           src={`https://securea.mlb.com/mlb/images/players/head_shot/${playerInfo.mlbid}.jpg`}
           alt={playerInfo.player}
@@ -132,7 +132,7 @@ const renderProfileStatsRow = () => {
         className="flex-1"
       >
         <h2 className="text-4xl font-extrabold text-white leading-tight mb-2">{playerInfo.player}</h2>
-        <div className="text-green-300 text-xl font-semibold mb-6">{playerInfo.team} <span className="text-white">·</span> {playerInfo.position}</div>
+        <div className="text-red-300 text-xl font-semibold mb-6">{playerInfo.team} <span className="text-white">·</span> {playerInfo.position}</div>
         {hasStats && (
           <div className="bg-gray-800/90 rounded-2xl px-10 py-7 max-w-3xl mx-auto shadow-xl">
             <h3 className="text-2xl font-bold text-gray-100 mb-5">2025 Season Stats</h3>
@@ -166,17 +166,17 @@ const renderProfileStatsRow = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-green-900 text-white font-sans p-6">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-900 text-white font-sans p-6">
       <header className="mb-6 flex flex-row items-start justify-between max-w-6xl mx-auto w-full">
         {renderProfileStatsRow()}
         <div className="w-auto self-start ml-4">
-          <button onClick={onBack} className="bg-green-500 px-7 py-3 rounded-xl hover:bg-green-600 font-bold text-lg text-black shadow-xl mt-2 sm:mt-0">Back</button>
+          <button onClick={onBack} className="bg-red-500 px-7 py-3 rounded-xl hover:bg-red-600 font-bold text-lg text-black shadow-xl mt-2 sm:mt-0">Back</button>
         </div>
       </header>
       {isDual && (
         <div className="flex gap-4 justify-center mb-8 mt-2">
-          <button onClick={() => setShowPitching(false)} className={`px-7 py-3 rounded-xl font-bold text-lg shadow-md transition ${!showPitching ? 'bg-green-500 text-black' : 'bg-gray-700 text-green-200'}`}>Hitting</button>
-          <button onClick={() => setShowPitching(true)} className={`px-7 py-3 rounded-xl font-bold text-lg shadow-md transition ${showPitching ? 'bg-green-500 text-black' : 'bg-gray-700 text-green-200'}`}>Pitching</button>
+          <button onClick={() => setShowPitching(false)} className={`px-7 py-3 rounded-xl font-bold text-lg shadow-md transition ${!showPitching ? 'bg-red-500 text-black' : 'bg-gray-700 text-red-200'}`}>Hitting</button>
+          <button onClick={() => setShowPitching(true)} className={`px-7 py-3 rounded-xl font-bold text-lg shadow-md transition ${showPitching ? 'bg-red-500 text-black' : 'bg-gray-700 text-red-200'}`}>Pitching</button>
         </div>
       )}
       {error && <div className="text-center text-red-400 mb-4 font-semibold">{error}</div>}
@@ -185,9 +185,9 @@ const renderProfileStatsRow = () => {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, type: 'spring', bounce: 0.13 }}
-          className="bg-gray-900/90 p-8 rounded-3xl border-2 border-green-400 max-w-4xl mx-auto shadow-xl mb-14"
+          className="bg-gray-900/90 p-8 rounded-3xl border-2 border-red-400 max-w-4xl mx-auto shadow-xl mb-14"
         >
-          <h3 className="text-xl font-bold text-green-300 mb-6 flex flex-col sm:flex-row sm:items-center gap-2">
+          <h3 className="text-xl font-bold text-red-300 mb-6 flex flex-col sm:flex-row sm:items-center gap-2">
             <span>{statLabelMap[activeStat] || activeStat} <span className="text-gray-400 font-normal">– Last 10 Games</span></span>
           </h3>
           <div className="flex flex-wrap justify-center gap-4 mb-7">
@@ -196,8 +196,8 @@ const renderProfileStatsRow = () => {
                 key={opt.key}
                 className={`px-5 py-2 rounded-xl text-base font-bold border-2 transition-all duration-100 shadow-sm focus:outline-none ${
                   activeStat === opt.key
-                    ? 'bg-green-500 text-black border-green-600 scale-105'
-                    : 'bg-white/90 text-gray-900 border-gray-300 hover:bg-green-100'
+                    ? 'bg-red-500 text-black border-red-600 scale-105'
+                    : 'bg-white/90 text-gray-900 border-gray-300 hover:bg-red-100'
                 }`}
                 onClick={() => (isDual ? (showPitching ? setSelectedPitcherStat(opt.key) : setSelectedStat(opt.key)) : (isPitcher ? setSelectedPitcherStat(opt.key) : setSelectedStat(opt.key)))}
               >
@@ -209,14 +209,14 @@ const renderProfileStatsRow = () => {
             <BarChart data={activeLogs} margin={{ top: 14, right: 32, left: 0, bottom: 36 }} barGap={4}>
               <defs>
                 <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.88}/>
-                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0.83}/>
+                  <stop offset="5%" stopColor="#fca5a5" stopOpacity={0.88}/>
+                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0.83}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="5 6" stroke="#2a2b3a" />
-              <XAxis dataKey="Date" stroke="#c3f7d6" tickLine={false} axisLine={{stroke: '#c3f7d6'}} fontSize={16} />
-              <YAxis stroke="#c3f7d6" domain={[0, 'dataMax + 1']} fontSize={15} tickLine={false} axisLine={{stroke: '#c3f7d6'}} />
-              <Tooltip content={<CustomTooltip selectedStat={activeStat} />} cursor={{ fill: '#00FF8833' }} />
+              <XAxis dataKey="Date" stroke="#fecaca" tickLine={false} axisLine={{stroke: '#fecaca'}} fontSize={16} />
+              <YAxis stroke="#fecaca" domain={[0, 'dataMax + 1']} fontSize={15} tickLine={false} axisLine={{stroke: '#fecaca'}} />
+              <Tooltip content={<CustomTooltip selectedStat={activeStat} />} cursor={{ fill: '#ff000033' }} />
               <Bar dataKey={activeStat} fill="url(#barGradient)" radius={[10, 10, 0, 0]} barSize={36} />
             </BarChart>
           </ResponsiveContainer>

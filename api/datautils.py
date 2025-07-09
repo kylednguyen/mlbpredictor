@@ -86,3 +86,63 @@ def get_career_stats(mlbid, pos="hitting"):
         return requests.get(url).json()["stats"][0]["splits"][0]["stat"]
     except Exception:
         return {}
+import requests
+from datetime import datetime, timedelta
+from collections import defaultdict
+
+def get_team_risers_and_droppers(n_days=20, n_games=10, top_k=10):
+    """Returns dict with risers and droppers for MLB teams."""
+    # Fetch last n_days of games
+    all_games = []
+    today = datetime.now()
+    for i in range(n_days):
+        date = (today - timedelta(days=i)).strftime("%m/%d/%Y")
+        url = f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&date={date}"
+        resp = requests.get(url)
+        data = resp.json()
+        for date_obj in data.get("dates", []):
+            for game in date_obj.get("games", []):
+                all_games.append(game)
+    # Build logs for each team
+    team_logs = defaultdict(list)
+    for game in all_games:
+        status = game.get("status", {}).get("detailedState", "")
+        if status not in ["Final", "Game Over"]:
+            continue
+        teams = game["teams"]
+        home_team = teams["home"]["team"]
+        away_team = teams["away"]["team"]
+        home_win = teams["home"]["isWinner"]
+        away_win = teams["away"]["isWinner"]
+        date = game["gameDate"][:10]
+        team_logs[home_team["id"]].append({
+            "team": home_team["name"],
+            "abbreviation": home_team.get("abbreviation", ""),
+            "date": date,
+            "win": home_win,
+        })
+        team_logs[away_team["id"]].append({
+            "team": away_team["name"],
+            "abbreviation": away_team.get("abbreviation", ""),
+            "date": date,
+            "win": away_win,
+        })
+    # Compute last n_games records
+    records = []
+    for team_id, games in team_logs.items():
+        games = sorted(games, key=lambda x: x["date"], reverse=True)[:n_games]
+        if len(games) < n_games:
+            continue
+        wins = sum(1 for g in games if g["win"])
+        losses = n_games - wins
+        win_pct = wins / n_games
+        records.append({
+            "team": games[0]["team"],
+            "abbreviation": games[0].get("abbreviation", ""),
+            "wins": wins,
+            "losses": losses,
+            "win_pct": round(win_pct, 3)
+        })
+    risers = sorted(records, key=lambda x: x["win_pct"], reverse=True)[:top_k]
+    droppers = sorted(records, key=lambda x: x["win_pct"])[:top_k]
+    return {"risers": risers, "droppers": droppers}

@@ -1,11 +1,16 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/*.py", "use": "@vercel/python" },
-    { "src": "package.json", "use": "@vercel/static-build" }
+    { "src": "api/vercel_app.py", "use": "@vercel/python" },
+    { "src": "frontend/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/app.py" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
+    { "src": "/api/(.*)", "dest": "/api/vercel_app.py" },
+    { "src": "/(.*)", "dest": "/frontend/dist/$1" }
+  ],
+  "functions": {
+    "api/vercel_app.py": {
+      "maxDuration": 30
+    }
+  }
 }
